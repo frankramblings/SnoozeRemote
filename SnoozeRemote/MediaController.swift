@@ -148,17 +148,11 @@ final class MediaController: NSObject, ObservableObject, AVAudioPlayerDelegate {
         guard let end = endDate else { return }
         let remaining = max(1, end.timeIntervalSinceNow)
 
-        // Capture volume for restore later
-        if let slider = volumeSlider {
+        // Fade volume if enabled
+        if fadeOutEnabled, let slider = volumeSlider {
             DispatchQueue.main.async {
                 self.originalVolume = slider.value
             }
-        }
-
-        if fadeOutEnabled, let slider = volumeSlider {
-            // Fade volume while STAYING in Phase 1 (mixing mode).
-            // The mixing player keeps running so the user's audio is uninterrupted.
-            // Only after the fade completes do we switch to exclusive mode.
             let steps = 30
             let stepDuration = min(remaining, AppConstants.fadeOutDurationSeconds) / Double(steps)
             var currentStep = 0
@@ -171,20 +165,16 @@ final class MediaController: NSObject, ObservableObject, AVAudioPlayerDelegate {
                     if currentStep >= steps {
                         timer.invalidate()
                         self.fadeTimer = nil
-                        // Fade done — now interrupt
-                        self.interruptOtherAudio()
                     }
                 }
             }
         } else {
-            // No fade — interrupt immediately
-            interruptOtherAudio()
+            // Capture volume for restore later even without fade
+            if let slider = volumeSlider {
+                originalVolume = slider.value
+            }
         }
-    }
 
-    /// Stops the mixing player, switches to exclusive audio session, and plays
-    /// a short silent track whose completion triggers the delegate callback.
-    private func interruptOtherAudio() {
         // Stop Phase 1 mixing player
         mixingPlayer?.stop()
         mixingPlayer = nil
@@ -193,9 +183,10 @@ final class MediaController: NSObject, ObservableObject, AVAudioPlayerDelegate {
         try? audioSession.setCategory(.playback, mode: .default)
         try? audioSession.setActive(true)
 
-        // Play a 1-second exclusive silent track.
+        // Play a fixed-length silent track for the remaining duration.
         // When it finishes, audioPlayerDidFinishPlaying fires.
-        guard let data = generateSilentWAV(durationSeconds: 1) else { return }
+        let exclusiveDuration = max(1, Int(ceil(remaining)))
+        guard let data = generateSilentWAV(durationSeconds: exclusiveDuration) else { return }
         do {
             let player = try AVAudioPlayer(data: data)
             player.delegate = self
