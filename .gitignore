@@ -1,0 +1,14 @@
+# macOS
+.DS_Store
+
+# Xcode
+xcuserdata/
+*.xcworkspace/xcuserdata/
+project.xcworkspace/
+
+# Build
+build/
+DerivedData/
+
+# App icon exports
+Appicon Exports/
