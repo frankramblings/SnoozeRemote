@@ -3,6 +3,10 @@ import SwiftUI
 struct ContentView: View {
     @EnvironmentObject var sessionManager: PhoneSessionManager
 
+    private var mediaController: MediaController {
+        sessionManager.mediaController
+    }
+
     var body: some View {
         NavigationStack {
             VStack(spacing: 24) {
@@ -21,8 +25,8 @@ struct ContentView: View {
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 32)
 
-                if sessionManager.timerManager.isTimerActive {
-                    timerStatusView
+                if mediaController.isTimerActive, let end = mediaController.endDate {
+                    timerStatusView(endDate: end)
                 } else {
                     idleStatusView
                 }
@@ -33,13 +37,13 @@ struct ContentView: View {
         }
     }
 
-    private var timerStatusView: some View {
+    private func timerStatusView(endDate: Date) -> some View {
         VStack(spacing: 12) {
             Label("Timer Active", systemImage: "timer")
                 .font(.headline)
                 .foregroundStyle(.orange)
 
-            Text(formatTime(sessionManager.timerManager.remainingSeconds))
+            Text(timerInterval: Date.now...endDate, countsDown: true)
                 .font(.system(.title, design: .monospaced))
                 .foregroundStyle(.primary)
 
@@ -63,12 +67,6 @@ struct ContentView: View {
                 .foregroundStyle(.tertiary)
         }
         .padding()
-    }
-
-    private func formatTime(_ seconds: TimeInterval) -> String {
-        let mins = Int(seconds) / 60
-        let secs = Int(seconds) % 60
-        return String(format: "%02d:%02d", mins, secs)
     }
 }
 

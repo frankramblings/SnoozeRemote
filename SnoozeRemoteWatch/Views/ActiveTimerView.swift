@@ -12,13 +12,14 @@ struct ActiveTimerView: View {
                     .stroke(lineWidth: 8)
                     .foregroundStyle(.gray.opacity(0.2))
 
-                // Progress ring
+                // Progress ring — drains clockwise from the top as time passes
                 Circle()
                     .trim(from: 0, to: progress)
                     .stroke(
-                        AngularGradient(
-                            colors: [.indigo, .purple, .indigo],
-                            center: .center
+                        LinearGradient(
+                            colors: [.indigo, .purple],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
                         ),
                         style: StrokeStyle(lineWidth: 8, lineCap: .round)
                     )
@@ -88,7 +89,7 @@ struct ActiveTimerView: View {
         if hours > 0 {
             return String(format: "%d:%02d:%02d", hours, minutes, seconds)
         }
-        return String(format: "%02d:%02d", minutes, seconds)
+        return String(format: "%d:%02d", minutes, seconds)
     }
 }
 

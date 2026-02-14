@@ -22,7 +22,12 @@ final class WatchSessionManager: NSObject, ObservableObject {
 
     private var session: WCSession?
 
-    // MARK: - Local fallback timer (runs if phone disconnects)
+    /// Tracks whether the phone is actively sending timer updates.
+    /// When true, we let the phone drive `remainingSeconds` instead of the fallback.
+    private var receivingPhoneUpdates = false
+    private var lastPhoneUpdateDate: Date?
+
+    // MARK: - Local fallback timer (always runs for display)
 
     private var fallbackTimer: Timer?
     private var fallbackEndDate: Date?
@@ -50,14 +55,22 @@ final class WatchSessionManager: NSObject, ObservableObject {
         crownValue = duration
         isTimerActive = true
         showCompletion = false
+        receivingPhoneUpdates = false
 
-        sendMessage([
+        let message: [String: Any] = [
             MessageKey.command: TimerCommand.start.rawValue,
             MessageKey.duration: minutes,
             MessageKey.fadeOutEnabled: fadeOutEnabled
-        ])
+        ]
+        sendMessage(message)
 
-        // Start a local fallback timer in case the phone becomes unreachable
+        // Also send via applicationContext so the phone gets it even if not currently reachable
+        sendApplicationContext(message)
+
+        // Guaranteed delivery via transferUserInfo
+        sendUserInfo(message)
+
+        // Always start the local countdown for display
         startFallbackTimer(duration: duration)
     }
 
@@ -65,11 +78,15 @@ final class WatchSessionManager: NSObject, ObservableObject {
         isTimerActive = false
         remainingSeconds = 0
         totalDuration = 0
+        receivingPhoneUpdates = false
         stopFallbackTimer()
 
-        sendMessage([
+        let message: [String: Any] = [
             MessageKey.command: TimerCommand.cancel.rawValue
-        ])
+        ]
+        sendMessage(message)
+        sendApplicationContext(message)
+        sendUserInfo(message)
     }
 
     func addTime(minutes: Int) {
@@ -82,10 +99,13 @@ final class WatchSessionManager: NSObject, ObservableObject {
             fallbackEndDate = end.addingTimeInterval(additionalSeconds)
         }
 
-        sendMessage([
+        let message: [String: Any] = [
             MessageKey.command: TimerCommand.addTime.rawValue,
             MessageKey.duration: minutes
-        ])
+        ]
+        sendMessage(message)
+        sendApplicationContext(message)
+        sendUserInfo(message)
     }
 
     func dismissCompletion() {
@@ -94,27 +114,35 @@ final class WatchSessionManager: NSObject, ObservableObject {
 
     // MARK: - Fallback Timer
 
-    /// A local timer on the Watch as a fallback display when the phone
-    /// can't send updates. The phone remains the actual source of truth
-    /// for pausing media.
+    /// A local timer on the Watch that always counts down for display purposes.
+    /// If the phone is actively sending updates, those override the local value.
     private func startFallbackTimer(duration: TimeInterval) {
         stopFallbackTimer()
         fallbackEndDate = Date().addingTimeInterval(duration)
 
-        fallbackTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+        let timer = Timer(timeInterval: 1.0, repeats: true) { [weak self] _ in
             guard let self = self, let end = self.fallbackEndDate else { return }
-            DispatchQueue.main.async {
-                let remaining = end.timeIntervalSinceNow
-                if remaining <= 0 {
-                    self.timerDidFire()
+            let remaining = end.timeIntervalSinceNow
+            if remaining <= 0 {
+                self.timerDidFire()
+            } else {
+                // If the phone sent an update within the last 3 seconds,
+                // let it drive the display. Otherwise use local countdown.
+                let phoneIsActive: Bool
+                if let lastUpdate = self.lastPhoneUpdateDate {
+                    phoneIsActive = Date().timeIntervalSince(lastUpdate) < 3
                 } else {
-                    // Only use fallback value if the phone isn't sending updates
-                    if self.session?.isReachable != true {
-                        self.remainingSeconds = remaining
-                    }
+                    phoneIsActive = false
+                }
+
+                if !phoneIsActive {
+                    self.remainingSeconds = remaining
                 }
             }
         }
+        // Add to .common mode so it fires during Digital Crown interaction
+        RunLoop.main.add(timer, forMode: .common)
+        fallbackTimer = timer
     }
 
     private func stopFallbackTimer() {
@@ -125,24 +153,45 @@ final class WatchSessionManager: NSObject, ObservableObject {
 
     private func timerDidFire() {
         stopFallbackTimer()
-        DispatchQueue.main.async {
-            self.isTimerActive = false
-            self.remainingSeconds = 0
-            self.showCompletion = true
-        }
+        isTimerActive = false
+        remainingSeconds = 0
+        showCompletion = true
     }
 
     // MARK: - Send Message
 
     private func sendMessage(_ message: [String: Any]) {
         guard let session = session, session.isReachable else {
-            isPhoneReachable = false
+            DispatchQueue.main.async { [weak self] in
+                self?.isPhoneReachable = false
+            }
             return
         }
-        isPhoneReachable = true
+        DispatchQueue.main.async { [weak self] in
+            self?.isPhoneReachable = true
+        }
         session.sendMessage(message, replyHandler: nil) { error in
             print("SnoozeRemote Watch: Send failed - \(error.localizedDescription)")
         }
+    }
+
+    /// Sends command via applicationContext as a backup delivery mechanism.
+    /// Unlike sendMessage, this is queued and delivered when the counterpart app launches.
+    private func sendApplicationContext(_ message: [String: Any]) {
+        guard let session = session else { return }
+        // Add a timestamp so the phone can tell if the context is stale
+        var context = message
+        context["timestamp"] = Date().timeIntervalSince1970
+        try? session.updateApplicationContext(context)
+    }
+
+    /// Sends command via transferUserInfo as a guaranteed delivery mechanism.
+    /// Queued and delivered even if the counterpart app is not currently reachable.
+    private func sendUserInfo(_ message: [String: Any]) {
+        guard let session = session else { return }
+        var info = message
+        info["timestamp"] = Date().timeIntervalSince1970
+        session.transferUserInfo(info)
     }
 
     // MARK: - Handle Incoming Messages
@@ -158,6 +207,10 @@ final class WatchSessionManager: NSObject, ObservableObject {
             case .timerUpdate:
                 if let remaining = message[MessageKey.remainingTime] as? TimeInterval {
                     self.remainingSeconds = remaining
+                    self.receivingPhoneUpdates = true
+                    self.lastPhoneUpdateDate = Date()
+                    // Sync fallback timer to phone's value
+                    self.fallbackEndDate = Date().addingTimeInterval(remaining)
                 }
 
             case .timerFired:
@@ -167,9 +220,10 @@ final class WatchSessionManager: NSObject, ObservableObject {
                 if let remaining = message[MessageKey.remainingTime] as? TimeInterval, remaining > 0 {
                     self.remainingSeconds = remaining
                     self.isTimerActive = true
+                    // Sync fallback
+                    self.fallbackEndDate = Date().addingTimeInterval(remaining)
                 }
                 if let playing = message[MessageKey.isPlaying] as? Bool {
-                    // Could be used for UI indication
                     _ = playing
                 }
 

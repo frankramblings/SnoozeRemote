@@ -7,22 +7,46 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A10001 /* SnoozeRemoteApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20001; };
-		A10002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20002; };
-		A10003 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20003; };
-		A10004 /* PhoneSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20004; };
-		A10005 /* MediaController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20005; };
-		A10006 /* TimerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20006; };
-		A10010 /* WatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20010; };
-		A10011 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20011; };
-		A10012 /* ActiveTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20012; };
-		A10013 /* CustomPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20013; };
-		A10014 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20014; };
-		A10015 /* WatchSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20015; };
-		A10016 /* CompletionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20016; };
-		A10017 /* TimerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20017; };
-		A10018 /* TimerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20017; };
+		A10001 /* SnoozeRemoteApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20001 /* SnoozeRemoteApp.swift */; };
+		A10002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20002 /* ContentView.swift */; };
+		A10003 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20003 /* Assets.xcassets */; };
+		A10004 /* PhoneSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20004 /* PhoneSessionManager.swift */; };
+		A10005 /* MediaController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20005 /* MediaController.swift */; };
+		A10010 /* WatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20010 /* WatchApp.swift */; };
+		A10011 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20011 /* HomeView.swift */; };
+		A10012 /* ActiveTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20012 /* ActiveTimerView.swift */; };
+		A10013 /* CustomPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20013 /* CustomPickerView.swift */; };
+		A10014 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20014 /* Assets.xcassets */; };
+		A10015 /* WatchSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20015 /* WatchSessionManager.swift */; };
+		A10016 /* CompletionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20016 /* CompletionView.swift */; };
+		A10017 /* TimerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20017 /* TimerState.swift */; };
+		A10018 /* TimerState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20017 /* TimerState.swift */; };
+		AF0002 /* SnoozeRemoteWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = A30002 /* SnoozeRemoteWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		AD0001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A00001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A70002;
+			remoteInfo = SnoozeRemoteWatch;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		AF0001 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				AF0002 /* SnoozeRemoteWatch.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		A20001 /* SnoozeRemoteApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnoozeRemoteApp.swift; sourceTree = "<group>"; };
@@ -30,7 +54,6 @@
 		A20003 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A20004 /* PhoneSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneSessionManager.swift; sourceTree = "<group>"; };
 		A20005 /* MediaController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaController.swift; sourceTree = "<group>"; };
-		A20006 /* TimerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerManager.swift; sourceTree = "<group>"; };
 		A20010 /* WatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchApp.swift; sourceTree = "<group>"; };
 		A20011 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		A20012 /* ActiveTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveTimerView.swift; sourceTree = "<group>"; };
@@ -82,7 +105,6 @@
 				A20002 /* ContentView.swift */,
 				A20004 /* PhoneSessionManager.swift */,
 				A20005 /* MediaController.swift */,
-				A20006 /* TimerManager.swift */,
 				A20003 /* Assets.xcassets */,
 				A40001 /* Info.plist */,
 				A40003 /* SnoozeRemote.entitlements */,
@@ -136,24 +158,26 @@
 /* Begin PBXNativeTarget section */
 		A70001 /* SnoozeRemote */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A90001;
+			buildConfigurationList = A90001 /* Build configuration list for PBXNativeTarget "SnoozeRemote" */;
 			buildPhases = (
 				A80001 /* Sources */,
 				A50001 /* Frameworks */,
 				AB0001 /* Resources */,
+				AF0001 /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				AE0001 /* PBXTargetDependency */,
 			);
 			name = SnoozeRemote;
 			productName = SnoozeRemote;
-			productReference = A30001;
+			productReference = A30001 /* SnoozeRemote.app */;
 			productType = "com.apple.product-type.application";
 		};
 		A70002 /* SnoozeRemoteWatch */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A90002;
+			buildConfigurationList = A90002 /* Build configuration list for PBXNativeTarget "SnoozeRemoteWatch" */;
 			buildPhases = (
 				A80002 /* Sources */,
 				A50002 /* Frameworks */,
@@ -165,7 +189,7 @@
 			);
 			name = SnoozeRemoteWatch;
 			productName = SnoozeRemoteWatch;
-			productReference = A30002;
+			productReference = A30002 /* SnoozeRemoteWatch.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -176,9 +200,9 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 2620;
 			};
-			buildConfigurationList = A90000;
+			buildConfigurationList = A90000 /* Build configuration list for PBXProject "SnoozeRemote" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -187,7 +211,7 @@
 				Base,
 			);
 			mainGroup = A60000;
-			productRefGroup = A60004;
+			productRefGroup = A60004 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -225,7 +249,6 @@
 				A10002 /* ContentView.swift in Sources */,
 				A10004 /* PhoneSessionManager.swift in Sources */,
 				A10005 /* MediaController.swift in Sources */,
-				A10006 /* TimerManager.swift in Sources */,
 				A10017 /* TimerState.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -245,6 +268,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		AE0001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A70002 /* SnoozeRemoteWatch */;
+			targetProxy = AD0001 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		AC0001 /* Debug */ = {
@@ -302,6 +333,7 @@
 				CODE_SIGN_ENTITLEMENTS = SnoozeRemote/SnoozeRemote.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9XH4G9XR8X;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SnoozeRemote/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -333,6 +365,7 @@
 				CODE_SIGN_ENTITLEMENTS = SnoozeRemote/SnoozeRemote.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9XH4G9XR8X;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SnoozeRemote/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -364,6 +397,7 @@
 				CODE_SIGN_ENTITLEMENTS = SnoozeRemoteWatch/SnoozeRemoteWatch.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9XH4G9XR8X;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SnoozeRemoteWatch/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = SnoozeRemote;
@@ -377,7 +411,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.snoozeremote.app.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "watchos watchsimulator";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -394,6 +427,7 @@
 				CODE_SIGN_ENTITLEMENTS = SnoozeRemoteWatch/SnoozeRemoteWatch.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9XH4G9XR8X;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = SnoozeRemoteWatch/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = SnoozeRemote;
@@ -407,7 +441,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.snoozeremote.app.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "watchos watchsimulator";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -419,7 +452,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		A90000 /* Build configuration list for PBXProject */ = {
+		A90000 /* Build configuration list for PBXProject "SnoozeRemote" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				AC0001 /* Debug */,
@@ -447,7 +480,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
 	};
 	rootObject = A00001 /* Project object */;
 }
